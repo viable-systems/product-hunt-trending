@@ -1,0 +1,212 @@
+{
+  "schema_version": 1,
+  "id": "001-build-product",
+  "branch_name": "wreckit/001-build-product",
+  "user_stories": [
+    {
+      "id": "US-001",
+      "title": "Install Anthropic SDK dependency",
+      "acceptance_criteria": [
+        "@anthropic-ai/sdk package added to package.json dependencies",
+        "npm install completes without errors",
+        "Package can be imported in TypeScript files without type errors"
+      ],
+      "priority": 1,
+      "status": "done",
+      "notes": "Version: ^0.32.1. Run npm install after adding to package.json."
+    },
+    {
+      "id": "US-002",
+      "title": "Create API route for product analysis",
+      "acceptance_criteria": [
+        "File exists at src/app/api/analyze/route.ts",
+        "Route accepts POST requests with JSON body containing 'input' field",
+        "Input validation requires minimum 50 characters",
+        "ANTHROPIC_API_KEY environment variable is validated on startup",
+        "Anthropic SDK is initialized with Claude 3.5 Sonnet model",
+        "Structured prompt returns JSON with all required fields (productName, oneLineSummary, marketPositioning, targetAudience, keyDifferentiators, trendAnalysis, growthPotential, recommendations)",
+        "JSON response is parsed and validated before returning",
+        "Error handling returns appropriate HTTP status codes (400 for bad input, 429 for rate limits, 500 for server errors)",
+        "Server-side logging captures errors for debugging"
+      ],
+      "priority": 1,
+      "status": "done",
+      "notes": "This is the core 'Transform' layer. Must handle edge cases: missing API key, invalid JSON from AI, rate limits, network failures."
+    },
+    {
+      "id": "US-003",
+      "title": "Document environment variables",
+      "acceptance_criteria": [
+        ".env.example file created in project root",
+        "File documents ANTHROPIC_API_KEY with instructions to get key from https://console.anthropic.com/",
+        "Optional .env file created with placeholder ANTHROPIC_API_KEY="
+      ],
+      "priority": 1,
+      "status": "done",
+      "notes": ".env file can be committed since .gitignore only ignores .env*.local files. This helps other developers get started quickly."
+    },
+    {
+      "id": "US-004",
+      "title": "Build main page with form input",
+      "acceptance_criteria": [
+        "src/app/page.tsx is converted to client component with 'use client' directive",
+        "Form includes textarea for product input with placeholder text",
+        "Character counter shows current character count and remaining characters needed",
+        "Submit button is disabled when input < 50 characters",
+        "Submit button is enabled when input >= 50 characters",
+        "Form onSubmit handler calls /api/analyze with POST request",
+        "Loading state displays spinner and 'Analyzing product trends...' message during API call",
+        "Error state displays error message with dismiss button when API call fails",
+        "Results state displays structured analysis when API call succeeds"
+      ],
+      "priority": 1,
+      "status": "done",
+      "notes": "Use useState for form state. Implement client-side validation before API call. Use Tailwind CSS v4 classes for styling (mobile-first responsive design)."
+    },
+    {
+      "id": "US-005",
+      "title": "Display analysis results",
+      "acceptance_criteria": [
+        "Results display only appears after successful analysis (not on page load)",
+        "Product name displayed as main heading (h2)",
+        "One-line summary displayed below product name",
+        "Market positioning section shows 2-3 sentences of analysis",
+        "Target audience section describes who the product is for",
+        "Key differentiators displayed as bulleted list with 3-5 items",
+        "Trend analysis section explains market relevance",
+        "Growth potential section assesses market opportunity",
+        "Recommendations displayed as bulleted list with 2-4 actionable items",
+        "All sections use consistent spacing and typography",
+        "Results container uses rounded corners, shadow, and white background"
+      ],
+      "priority": 1,
+      "status": "done",
+      "notes": "No hardcoded data — all content comes from API response. Use semantic HTML (section, h3, ul, li, p). Orange accent color (#EA580C) matches Product Hunt brand."
+    },
+    {
+      "id": "US-006",
+      "title": "Implement copy to clipboard functionality",
+      "acceptance_criteria": [
+        "'📋 Copy to Clipboard' button appears in results header",
+        "Button formats all analysis sections into plain text",
+        "Copy function uses navigator.clipboard.writeText() API",
+        "Alert confirms 'Analysis copied to clipboard!' after successful copy",
+        "Clipboard content includes all sections: product name, summary, market positioning, target audience, key differentiators, trend analysis, growth potential, recommendations",
+        "Text formatting uses line breaks and bullet points for readability"
+      ],
+      "priority": 2,
+      "status": "done",
+      "notes": "No fallback needed for modern browsers. Consider try/catch for older browser support if required."
+    },
+    {
+      "id": "US-007",
+      "title": "Implement JSON export",
+      "acceptance_criteria": [
+        "'💾 Download JSON' button appears in export button group",
+        "Download creates JSON file with complete analysis object",
+        "File is named '{product-name}-analysis.json' (spaces replaced with hyphens)",
+        "JSON is properly formatted with 2-space indentation",
+        "File contains all fields from AnalysisResponse interface",
+        "Download triggers browser's native download behavior"
+      ],
+      "priority": 2,
+      "status": "done",
+      "notes": "Use Blob API with 'application/json' MIME type. Create temporary <a> element, trigger click, then revoke object URL."
+    },
+    {
+      "id": "US-008",
+      "title": "Implement Markdown export",
+      "acceptance_criteria": [
+        "'📄 Download Markdown' button appears in export button group",
+        "Download creates Markdown file with formatted analysis",
+        "File is named '{product-name}-analysis.md' (spaces replaced with hyphens)",
+        "Markdown uses proper heading hierarchy (# for title, ## for sections)",
+        "Key differentiators and recommendations use bullet points (- item)",
+        "File is readable in Markdown previewers (GitHub, VS Code, etc.)"
+      ],
+      "priority": 2,
+      "status": "done",
+      "notes": "Use template string with Markdown syntax. Blob with 'text/markdown' MIME type. Sanitize product name for filename."
+    },
+    {
+      "id": "US-009",
+      "title": "Implement text export",
+      "acceptance_criteria": [
+        "'📝 Download Text' button appears in export button group",
+        "Download creates plain text file with analysis",
+        "File is named '{product-name}-analysis.txt' (spaces replaced with hyphens)",
+        "Text formatting uses line breaks and bullet points (•) for readability",
+        "No Markdown or HTML syntax in output",
+        "File is readable in any text editor"
+      ],
+      "priority": 2,
+      "status": "done",
+      "notes": "Similar to copy-to-clipboard format but saves as file. Blob with 'text/plain' MIME type."
+    },
+    {
+      "id": "US-010",
+      "title": "Add responsive design",
+      "acceptance_criteria": [
+        "Layout uses mobile-first Tailwind CSS classes",
+        "Mobile layout (375px): Single column, full-width input and buttons",
+        "Tablet layout (768px): Reasonable max-width (max-w-4xl), centered",
+        "Desktop layout (1280px+): Content centered with comfortable max-width",
+        "No horizontal scroll at any viewport size",
+        "Text is readable at all sizes (minimum 16px base font)",
+        "Buttons are touch-friendly (minimum 44px height)",
+        "Spacing adjusts appropriately for different screen sizes"
+      ],
+      "priority": 2,
+      "status": "done",
+      "notes": "Use Tailwind's responsive prefixes (sm:, md:, lg:, xl:). Test at 375px, 768px, and 1920px viewports."
+    },
+    {
+      "id": "US-011",
+      "title": "Enhance SEO metadata",
+      "acceptance_criteria": [
+        "Title updated to 'Product Hunt Trending Analyzer - AI-Powered Product Analysis'",
+        "Description explains what the tool does and key benefits",
+        "Open Graph tags added (title, description, type: website)",
+        "Twitter Card tags added (card: summary, title, description)",
+        "Metadata defined in src/app/layout.tsx using Metadata type",
+        "Social link previews work when sharing URL"
+      ],
+      "priority": 3,
+      "status": "done",
+      "notes": "Test social preview in Slack, Discord, or using https://www.opengraph.xyz/"
+    },
+    {
+      "id": "US-012",
+      "title": "Add accessibility improvements",
+      "acceptance_criteria": [
+        "Textarea has proper label associated with 'for' attribute",
+        "Character count has aria-describedby linking to textarea",
+        "Error messages have role='alert' and aria-live='polite'",
+        "Loading spinner has aria-hidden='true' and container has role='status'",
+        "Export buttons have accessible button text (not just emojis)",
+        "Keyboard navigation works: Tab through form, Enter to submit",
+        "Focus visible indicator on all interactive elements",
+        "Color contrast meets WCAG AA standards (minimum 4.5:1 for text)"
+      ],
+      "priority": 3,
+      "status": "done",
+      "notes": "Test with VoiceOver (Mac) or NVDA (Windows). Use WAVE or Lighthouse accessibility audit."
+    },
+    {
+      "id": "US-013",
+      "title": "Verify production build",
+      "acceptance_criteria": [
+        "npm run build completes with zero errors",
+        "npm run build completes with zero warnings",
+        "Production build generates .next directory",
+        "npm run start successfully serves production build",
+        "All functionality works in production mode (form, API, exports)",
+        "No console errors in browser during production mode",
+        "No TypeScript compilation errors (npx tsc --noEmit passes)"
+      ],
+      "priority": 4,
+      "status": "done",
+      "notes": "This is the final gate. Must pass before considering work complete. Run build in clean environment (rm -rf .next node_modules && npm install && npm run build)."
+    }
+  ]
+}

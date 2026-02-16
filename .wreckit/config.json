@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "base_branch": "main",
+  "branch_prefix": "wreckit/",
+  "merge_mode": "direct",
+  "agent": {
+    "kind": "claude_sdk",
+    "model": "claude-sonnet-4-20250514"
+  },
+  "max_iterations": 100,
+  "timeout_seconds": 2400,
+  "pr_checks": {
+    "allow_unsafe_direct_merge": true
+  }
+}
